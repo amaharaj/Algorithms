@@ -4,27 +4,27 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
-import edu.princeton.cs.algs4.QuickUnionUF;
 
 public class Percolation {
    private int[] id;
-   private int nsites;
+   private int nsites; 
    private boolean[][] grid;
    private boolean isOpen;
    private boolean isFull;  
    private boolean percolates;
- //  private QuickUnionUF uf = new QuickUnionUF(); 
+   private WeightedQuickUnionUF uf; 
+
 
    public Percolation(int n)                // create n-by-n grid, with all sites blocked
    { 
       // create boolean grid and array for IDs
       grid = new boolean[n][n];
+      uf = new WeightedQuickUnionUF(n*n);
       id = new int[n*n];
       // fill id array with integers - these will be the objects we are connecting
       for (int i=0; i<n*n; i++) {
          id[i] = i+1; 
       }
-
       System.out.println("The length of the id array is: " + id.length);
    }
 
@@ -60,10 +60,10 @@ public class Percolation {
       // ATTENTION: figure out why the union call isn't working. 
 
       // Set top, bottom, left and right neighbours to be true
-      boolean tn = true; 
-      boolean bn = true;
+      boolean tn = true;
+      boolean bn = true; 
       boolean ln = true; 
-      boolean rn = true; 
+      boolean rn = true;
 
       // Check if neighbours are out of bounds. If they are, set the neighbour
       // to be false. 
@@ -94,6 +94,7 @@ public class Percolation {
       if (tn == true) {
          if (grid[row-1][col] == true) {
             System.out.println("Top neighbour is true!");
+            uf.union(id[middle], id[top]);
          } else {
             System.out.println("Top neighbour is false :(");
          }
@@ -166,17 +167,14 @@ public class Percolation {
    public static void main(String[] args)   // test client (optional)
    {
       // Attention: modify main function to read in variables at command line 
-
-      //StdOut.readInt(args[0]);  
       StdOut.println("Running Percolation Alg...");
-      int n = 5; 
+      int n = 5;
       // create and initialize object
       Percolation pc = new Percolation(n); 
-      //QuickUnionUF uf = new QuickUnion(n);
-      System.out.println("inside the Main method!");
+      System.out.println(pc.uf.connected(2,3));
       // call method to open sites
       for (int i=0; i<n; i++) {
-         pc.open(n-1,i);
+         pc.open(n-1,i); 
          System.out.println("~~~~~~~ We are at the ith entry~~~~~~~~" + i); 
       }
    }
