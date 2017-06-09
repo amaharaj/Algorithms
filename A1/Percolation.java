@@ -13,16 +13,16 @@ public class Percolation {
    private boolean isOpen;
    private boolean isFull;  
    private boolean percolates;
+ //  private QuickUnionUF uf = new QuickUnionUF(); 
 
    public Percolation(int n)                // create n-by-n grid, with all sites blocked
    { 
-      System.out.println("inside the Percolation method!");
       // create boolean grid and array for IDs
       grid = new boolean[n][n];
       id = new int[n*n];
       // fill id array with integers - these will be the objects we are connecting
       for (int i=0; i<n*n; i++) {
-         id[i] = i; 
+         id[i] = i+1; 
       }
 
       System.out.println("The length of the id array is: " + id.length);
@@ -49,29 +49,85 @@ public class Percolation {
 
    public boolean isOpen(int row, int col)  // is site (row, col) open?
    {
-      // ATTENTION: use modular arithmetic here?
-      // for now, create a variable which identifies the current index's ID label and the label
+      // For now, create a variable which identifies the current index's ID label and the label
       // of the neighbour below it on the grid. 
-      int value1 = col + row*grid.length;
-      int value2 = col + (row+1)*grid.length;
-
+      int middle = col + row*grid.length;
+      int bottom = col + (row+1)*grid.length;
+      int top = col + (row-1)*grid.length;
+      int right = middle + 1; 
+      int left = middle - 1; 
  
-      System.out.println("---------- printing value1 : " + value1 + " and value2 : " + value2);
-
-      // ATTENTION: add checks to see if the neighbouring values are out of bounds
       // ATTENTION: figure out why the union call isn't working. 
-      // check to see if the neighbour below the current index is also true. If it 
-      // is, we will call the union function to change the id value. 
-      if (grid[row+1][col] = true ) {
-      // union(id[value1], id[value2]);
-         System.out.println("id[" + value1 + "] is now connected to id[" + value2 + "]");
-         System.out.println("Changing id to: " + id[value1] + " and " +  id[value2] );
-         isOpen = true; 
-         System.out.println("isOpen: " + isOpen);
+
+      // Set top, bottom, left and right neighbours to be true
+      boolean tn = true; 
+      boolean bn = true;
+      boolean ln = true; 
+      boolean rn = true; 
+
+      // Check if neighbours are out of bounds. If they are, set the neighbour
+      // to be false. 
+      System.out.println("Now printing id[middle]: " + id[middle]);
+      System.out.println("Now printing id[middle]%grid.length: " + id[middle]%grid.length);
+      if (id[middle]%grid.length == 1) {
+         ln = false; 
+      } else {
+         System.out.println("Left neighbour exists");
       }
-      else {
-         isOpen = false; 
+      if (id[middle]%grid.length == 0) {
+         rn = false;
+      } else {
+         System.out.println("Right neighbour exists");
       }
+      if (row == 0 ) {
+         tn = false; 
+      } else {
+         System.out.println("Top neighbour exists");
+      }
+      if (row == (grid.length-1)) {
+         bn = false; 
+      } else {
+         System.out.println("Bottom neighbour exists");
+      }
+
+      // Check each neighbour if it exists
+      if (tn == true) {
+         if (grid[row-1][col] == true) {
+            System.out.println("Top neighbour is true!");
+         } else {
+            System.out.println("Top neighbour is false :(");
+         }
+      } else {
+         System.out.println("No top neighbour");
+      }
+      if (bn == true) {
+         if (grid[row+1][col] == true) {
+            System.out.println("Bottom neighbour is true!");
+         } else {
+            System.out.println("Bottom neighbour is false :(");
+         }
+      } else {
+         System.out.println("No bottom neighbour");
+      }
+      if (ln == true) { 
+         if (grid[row][col-1] == true) {
+            System.out.println("Left neighbour is true!");
+         } else {
+            System.out.println("Left neighbour is false :(");
+         }
+      } else {
+         System.out.println("No left neighbour");
+      } 
+      if (rn == true) {
+         if (grid[row][col+1] == true) {
+            System.out.println("Right neighbour is true!");
+         } else {
+            System.out.println("Right neighbour is false :(");
+         }
+      } else {
+         System.out.println("No right neighbour");
+      }
+
       return isOpen; 
    }
 
@@ -116,10 +172,11 @@ public class Percolation {
       int n = 5; 
       // create and initialize object
       Percolation pc = new Percolation(n); 
+      //QuickUnionUF uf = new QuickUnion(n);
       System.out.println("inside the Main method!");
       // call method to open sites
       for (int i=0; i<n; i++) {
-         pc.open(i,2);
+         pc.open(n-1,i);
          System.out.println("~~~~~~~ We are at the ith entry~~~~~~~~" + i); 
       }
    }
